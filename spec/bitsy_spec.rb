@@ -73,4 +73,76 @@ describe Bitsy do
     end
   end
 
+  describe "#set" do
+    context "flag is unset" do
+      subject { Prefs.new }
+      before { subject.set(:create) }
+      its(:has_create) { should be_true }
+    end
+
+    context "flag is set" do
+      subject { Prefs.new([:create]) }
+      before { subject.set(:create) }
+      its(:has_create) { should be_true }
+    end
+
+    context "unrecognised flag" do
+      let(:prefs) { Prefs.new }
+
+      it "should raise InvalidFlagError" do
+        expect {
+          prefs.set(:invalid)
+        }.to raise_error(Bitsy::InvalidFlagError)
+      end
+    end
+  end
+
+  describe "#unset" do
+    context "flag is unset" do
+      subject { Prefs.new }
+      before { subject.unset(:create) }
+      its(:has_create) { should_not be_true }
+    end
+
+    context "flag is set" do
+      subject { Prefs.new([:create]) }
+      before { subject.unset(:create) }
+      its(:has_create) { should_not be_true }
+    end
+
+    context "unrecognised flag" do
+      let(:prefs) { Prefs.new }
+
+      it "should raise InvalidFlagError" do
+        expect {
+          prefs.unset(:invalid)
+        }.to raise_error(Bitsy::InvalidFlagError)
+      end
+    end
+  end
+
+  describe "#toggle" do
+    context "flag is unset" do
+      subject { Prefs.new }
+      before { subject.toggle(:create) }
+      its(:has_create) { should be_true }
+    end
+
+    context "flag is set" do
+      subject { Prefs.new([:create]) }
+      before { subject.toggle(:create) }
+      its(:has_create) { should_not be_true }
+    end
+
+    context "unrecognised flag" do
+      let(:prefs) { Prefs.new }
+
+      it "should raise InvalidFlagError" do
+        expect {
+          prefs.toggle(:invalid)
+        }.to raise_error(Bitsy::InvalidFlagError)
+      end
+    end
+  end
+
 end

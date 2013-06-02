@@ -58,16 +58,42 @@ class Bitsy
     end
   end
 
+  def set(*flags)
+    self.value = flags
+  end
+
+  alias_method :<<, :set
+
+  def unset(*flags)
+    masks_for_flags(flags) do |mask|
+      self.value = value & ~mask.value
+    end
+  end
+
+  def toggle(*flags)
+    masks_for_flags(flags) do |mask|
+      self.value = value ^ mask.value
+    end
+  end
+
   private
 
   attr_reader :value
+
+  def masks_for_flags(flags)
+    flags.each do |flag|
+      mask = self.class.masks.find { |m| m.flag == flag }
+      raise InvalidFlagError unless mask
+      yield mask
+    end
+  end
 
   def value=(val)
     if val.is_a? Integer
       @value = val
 
     elsif val.is_a? Array
-      @value = 0
+      @value = 0 if @value.nil?
 
       val.each do |flag|
         mask = self.class.masks.find { |m| m.flag == flag }
