@@ -1,11 +1,19 @@
 class Bitsy
   class Mask
 
-    attr_reader :flag
+    attr_reader :flag, :value
 
-    def initialize(flag, idx)
+    def self.with_index(flag, idx)
+      self.new(flag, (1 << idx))
+    end
+
+    def initialize(flag, value)
       @flag = flag
-      @idx = idx
+      @value = value
+    end
+
+    def to_i
+      value
     end
 
     def value
@@ -14,6 +22,5 @@ class Bitsy
 
     private
 
-    attr_reader :idx
   end
 end

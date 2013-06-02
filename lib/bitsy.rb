@@ -14,7 +14,7 @@ class Bitsy
 
   def self.masks
     @masks ||= flags.map.with_index do |flag, idx|
-      Bitsy::Mask.new(flag, idx)
+      Bitsy::Mask.with_index(flag, idx)
     end
   end
 
