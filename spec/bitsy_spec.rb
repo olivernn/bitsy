@@ -5,6 +5,13 @@ class Prefs < Bitsy
 end
 
 describe Bitsy do
+
+  describe ".masks" do
+    subject { Prefs.masks }
+    its(:size) { should == 6 }
+    its(:first) { should be_a Bitsy::Mask }
+  end
+
   describe "#initialize" do
     context "no value" do
       subject { Prefs.new }

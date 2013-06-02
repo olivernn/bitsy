@@ -1,4 +1,5 @@
 require "bitsy/version"
+require "bitsy/mask"
 
 class Bitsy
   class InvalidFlagError < StandardError ; end
@@ -11,6 +12,12 @@ class Bitsy
     end
   end
 
+  def self.masks
+    @masks ||= flags.map.with_index do |flag, idx|
+      Bitsy::Mask.new(flag, idx)
+    end
+  end
+
   def initialize(val = 0)
     self.value = val
   end
@@ -20,9 +27,8 @@ class Bitsy
   end
 
   def to_a
-    self.class.flags.each_with_object([]).with_index do |(flag, memo), idx|
-      mask = (1 << idx)
-      memo << flag unless (value & mask).zero?
+    self.class.masks.each_with_object([]) do |mask, memo|
+      memo << mask.flag unless (value & mask.value).zero?
     end
   end
 
@@ -38,10 +44,10 @@ class Bitsy
       @value = 0
 
       val.each do |flag|
-        idx = self.class.flags.find_index(flag)
-        raise InvalidFlagError unless idx
+        mask = self.class.masks.find { |m| m.flag == flag }
+        raise InvalidFlagError unless mask
 
-        @value |= (1 << idx)
+        @value |= mask.value
       end
 
     else
