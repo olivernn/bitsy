@@ -145,4 +145,54 @@ describe Bitsy do
     end
   end
 
+  describe "#&" do
+    let(:prefs) { Prefs.new(1) }
+
+    context "with an integer" do
+      subject { prefs & 1 }
+      its(:to_i) { should == 1 }
+      it { should be_kind_of Prefs }
+    end
+
+    context "with a mask" do
+      let(:mask) { Bitsy::Mask.new(:flag, 1) }
+      subject { prefs & mask }
+      its(:to_i) { should == 1 }
+      it { should be_kind_of Prefs }
+    end
+  end
+
+  describe "#|" do
+    let(:prefs) { Prefs.new(1) }
+
+    context "with an integer" do
+      subject { prefs | 2 }
+      its(:to_i) { should == 3 }
+      it { should be_kind_of Prefs }
+    end
+
+    context "with a mask" do
+      let(:mask) { Bitsy::Mask.new(:flag, 2) }
+      subject { prefs | mask }
+      its(:to_i) { should == 3 }
+      it { should be_kind_of Prefs }
+    end
+  end
+
+  describe "#^" do
+    let(:prefs) { Prefs.new(2) }
+
+    context "with an integer" do
+      subject { prefs ^ 2 }
+      its(:to_i) { should == 0 }
+      it { should be_kind_of Prefs }
+    end
+
+    context "with a mask" do
+      let(:mask) { Bitsy::Mask.new(:flag, 2) }
+      subject { prefs ^ mask }
+      its(:to_i) { should == 0 }
+      it { should be_kind_of Prefs }
+    end
+  end
 end

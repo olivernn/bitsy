@@ -76,6 +76,18 @@ class Bitsy
     end
   end
 
+  def &(other)
+    self.class.new(value & other.to_i)
+  end
+
+  def |(other)
+    self.class.new(value | other.to_i)
+  end
+
+  def ^(other)
+    self.class.new(value ^ other.to_i)
+  end
+
   private
 
   attr_reader :value

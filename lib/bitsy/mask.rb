@@ -16,11 +16,30 @@ class Bitsy
       value
     end
 
-    def value
-      @value ||= (1 << idx)
+    def &(other)
+      self.class.new(combine_flag(other, 'AND'), value & other.to_i)
+    end
+
+    def |(other)
+      self.class.new(combine_flag(other, 'OR'), value | other.to_i)
+    end
+
+    def ^(other)
+      self.class.new(combine_flag(other, 'XOR'), value ^ other.to_i)
+    end
+
+    def ~
+      self.class.new("NOT_#{flag}".to_sym, ~value)
     end
 
     private
 
+    def combine_flag(other, operation)
+      if other.respond_to?(:flag)
+        "#{flag}_#{operation}_#{other.flag}".to_sym
+      else
+        "#{flag}_#{operation}_#{other}".to_sym
+      end
+    end
   end
 end
