@@ -47,6 +47,14 @@ describe Bitsy do
     end
   end
 
+  describe "mask constants" do
+    it "should set a constant for each flag" do
+      Prefs.flags.each do |flag|
+        Prefs.const_defined?(flag.upcase, false).should be_true
+      end
+    end
+  end
+
   describe ".masks" do
     subject { Prefs.masks }
     its(:size) { should == 6 }

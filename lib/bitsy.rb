@@ -14,7 +14,9 @@ class Bitsy
 
   def self.masks
     @masks ||= flags.map.with_index do |flag, idx|
-      Bitsy::Mask.with_index(flag, idx)
+      mask = Bitsy::Mask.with_index(flag, idx)
+      self.const_set(flag.upcase, mask)
+      mask
     end
   end
 
