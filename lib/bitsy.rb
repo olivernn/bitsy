@@ -13,10 +13,11 @@ class Bitsy
   end
 
   def self.masks
-    @masks ||= flags.map.with_index do |flag, idx|
-      mask = Bitsy::Mask.with_index(flag, idx)
+    @masks ||= flags.inject({}) do |memo, flag|
+      mask = Bitsy::Mask.with_index(flag, self.flags.index(flag))
       self.const_set(flag.upcase, mask)
-      mask
+      memo[flag] = mask
+      memo
     end
   end
 
@@ -29,7 +30,7 @@ class Bitsy
   end
 
   def to_a
-    self.class.masks.each_with_object([]) do |mask, memo|
+    self.class.masks.each_with_object([]) do |(_, mask), memo|
       memo << mask.flag unless (value & mask.value).zero?
     end
   end
@@ -46,7 +47,7 @@ class Bitsy
 
   def every(*flags)
     flags.inject(true) do |memo, flag|
-      mask = self.class.masks.find { |m| m.flag == flag.to_sym }
+      mask = self.class.masks.fetch(flag.to_sym, nil)
       raise InvalidFlagError.new(flag) unless mask
       memo && !(value & mask.value).zero?
     end
@@ -54,7 +55,7 @@ class Bitsy
 
   def some(*flags)
     flags.inject(false) do |memo, flag|
-      mask = self.class.masks.find { |m| m.flag == flag.to_sym }
+      mask = self.class.masks.fetch(flag.to_sym, nil)
       raise InvalidFlagError.new(flag) unless mask
       memo || !(value & mask.value).zero?
     end
@@ -96,7 +97,7 @@ class Bitsy
 
   def masks_for_flags(flags)
     flags.each do |flag|
-      mask = self.class.masks.find { |m| m.flag == flag }
+      mask = self.class.masks.fetch(flag.to_sym, nil)
       raise InvalidFlagError unless mask
       yield mask
     end
@@ -110,7 +111,7 @@ class Bitsy
       @value = 0 if @value.nil?
 
       val.each do |flag|
-        mask = self.class.masks.find { |m| m.flag == flag }
+        mask = self.class.masks.fetch(flag.to_sym, nil)
         raise InvalidFlagError unless mask
 
         @value |= mask.value

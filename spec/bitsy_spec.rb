@@ -58,7 +58,7 @@ describe Bitsy do
   describe ".masks" do
     subject { Prefs.masks }
     its(:size) { should == 6 }
-    its(:first) { should be_a Bitsy::Mask }
+    its([:create]) { should be_a Bitsy::Mask }
   end
 
   describe "#has_*" do
