@@ -9,17 +9,20 @@ describe Bitsy do
     context "no value" do
       subject { Prefs.new }
       its(:to_i) { should == 0 }
+      its(:to_a) { should be_empty }
     end
 
     context "integer value" do
       subject { Prefs.new(2) }
       its(:to_i) { should == 2 }
+      its(:to_a) { should == [:update] }
     end
 
     context "array value" do
       context "empty array" do
         subject { Prefs.new([]) }
         its(:to_i) { should == 0 }
+        its(:to_a) { should be_empty }
       end
 
       context "non empty array" do
@@ -27,6 +30,7 @@ describe Bitsy do
           let(:flags) { [:create, :update] }
           subject { Prefs.new(flags) }
           its(:to_i) { should == 3 }
+          its(:to_a) { should == flags }
         end
 
         context "invalid flags" do

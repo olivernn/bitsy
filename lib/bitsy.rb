@@ -4,7 +4,11 @@ class Bitsy
   class InvalidFlagError < StandardError ; end
 
   def self.flags(*flags)
-    @flags = flags
+    if flags.empty?
+      @flags
+    else
+      @flags = flags
+    end
   end
 
   def initialize(val = 0)
@@ -13,6 +17,13 @@ class Bitsy
 
   def to_i
     value
+  end
+
+  def to_a
+    self.class.flags.each_with_object([]).with_index do |(flag, memo), idx|
+      mask = (1 << idx)
+      memo << flag unless (value & mask).zero?
+    end
   end
 
   private
@@ -27,7 +38,7 @@ class Bitsy
       @value = 0
 
       val.each do |flag|
-        idx = self.class.instance_variable_get("@flags").find_index(flag)
+        idx = self.class.flags.find_index(flag)
         raise InvalidFlagError unless idx
 
         @value |= (1 << idx)
