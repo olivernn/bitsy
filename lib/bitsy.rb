@@ -32,6 +32,32 @@ class Bitsy
     end
   end
 
+  def method_missing(name, *args, &block)
+    super unless name.match(/^has_/)
+
+    if name.match(/_or_/)
+      some(*name.to_s.gsub(/^has_/, '').split(/_or_/))
+    else
+      every(*name.to_s.gsub(/^has_/, '').split(/_and_/))
+    end
+  end
+
+  def every(*flags)
+    flags.inject(true) do |memo, flag|
+      mask = self.class.masks.find { |m| m.flag == flag.to_sym }
+      raise InvalidFlagError.new(flag) unless mask
+      memo && !(value & mask.value).zero?
+    end
+  end
+
+  def some(*flags)
+    flags.inject(false) do |memo, flag|
+      mask = self.class.masks.find { |m| m.flag == flag.to_sym }
+      raise InvalidFlagError.new(flag) unless mask
+      memo || !(value & mask.value).zero?
+    end
+  end
+
   private
 
   attr_reader :value
