@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Bitsy::VERSION
   spec.authors       = ["Oliver Nightingale"]
   spec.email         = ["oliver.nightingale1@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = %q{Simple Bitmask}
+  spec.summary       = %q{Simple Bitmask}
   spec.homepage      = ""
   spec.license       = "MIT"
 
